@@ -1,0 +1,98 @@
+def encrypt_row_transposition(plaintext, key):
+    # Create the ciphertext variable
+    ciphertext = ''
+    # Create the matrix with the plaintext
+    matrix = []
+    for i in range(key):
+        matrix.append(plaintext[i::key])
+    # Read the ciphertext from the matrix
+    for col in matrix:
+        ciphertext += col
+    return ciphertext
+
+def decrypt_row_transposition(ciphertext, key):
+    # Create the plaintext variable
+    plaintext = ''
+    # Calculate the number of rows
+    rows = len(ciphertext) // key + (1 if len(ciphertext) % key else 0)
+    # Create the matrix with the ciphertext
+    matrix = [''] * rows
+    # Fill the matrix with the ciphertext
+    for i, char in enumerate(ciphertext):
+        matrix[i % rows] += char
+    # Read the plaintext from the matrix
+    for row in matrix:
+        plaintext += row
+    return plaintext.strip()
+
+def encrypt_column_transposition(plaintext, key):
+    # Create the ciphertext variable
+    ciphertext = ''
+    # Create the matrix with the plaintext
+    matrix = []
+    for i in range(0, len(plaintext), key):
+        matrix.append(plaintext[i:i+key])
+    # Transpose the matrix
+    transposed_matrix = []
+    for i in range(key):
+        transposed_matrix.append('')
+        for j in range(len(matrix)):
+            try:
+                transposed_matrix[i] += matrix[j][i]
+            except IndexError:
+                transposed_matrix[i] += ' '
+    # Read the ciphertext from the transposed matrix
+    for row in transposed_matrix:
+        ciphertext += row
+    return ciphertext
+
+def decrypt_column_transposition(ciphertext, key):
+    # Create the plaintext variable
+    plaintext = ''
+    # Calculate the number of rows
+    rows = len(ciphertext) // key + (1 if len(ciphertext) % key else 0)
+    # Create the matrix with the ciphertext
+    matrix = [''] * rows
+    # Fill the matrix with the ciphertext
+    for i, char in enumerate(ciphertext):
+        matrix[i % rows] += char
+    # Transpose the matrix back to its original form
+    transposed_matrix = []
+    for i in range(rows):
+        transposed_matrix.append('')
+        for j in range(key):
+            try:
+                transposed_matrix[i] += matrix[j][i]
+            except IndexError:
+                transposed_matrix[i] += ' '
+    # Read the plaintext from the transposed matrix
+    for row in transposed_matrix:
+        plaintext += row
+    return plaintext.strip()
+
+def main():
+    message = input("Enter the message to be encrypted: ")
+    columns = int(input("Enter the number of columns for transposition: "))
+
+    print("Options:")
+    print("1. Row Transposition")
+    print("2. Column Transposition")
+    print("3. Both")
+    option = int(input("Select an option: "))
+
+    if option == 1 or option == 3:
+        print(f"\nPlaintext: {message}")
+        encrypted_message = encrypt_row_transposition(message, columns)
+        print(f"Encrypted ciphertext (Row Transposition): {encrypted_message}")
+        decrypted_message = decrypt_row_transposition(encrypted_message, columns)
+        print(f"Decrypted plaintext (Row Transposition): {decrypted_message}")
+
+    if option == 2 or option == 3:
+        print(f"\nPlaintext: {message}")
+        encrypted_message = encrypt_column_transposition(message, columns)
+        print(f"Encrypted ciphertext (Column Transposition): {encrypted_message}")
+        decrypted_message = decrypt_column_transposition(encrypted_message, columns)
+        print(f"Decrypted plaintext (Column Transposition): {decrypted_message}")
+
+if __name__ == "__main__":
+    main()
